@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject UseCases.IViewProductsUseCase ViewProductUseCase
 @inject UseCases.IGetCategoryByIdUseCase GetCategoryByIdUSeCase
+@inject UseCases.IDeleteProductUseCase DeleteProductUseCase
 
 <h3>ProductsComponent</h3>
 
@@ -24,14 +25,18 @@
         <tbody>
             @foreach (var product in products)
             {
-            <tr>
-                <td>@GetCategoryByIdUSeCase.Execute(product.CategoryId.Value)?.Name</td>
-                <td>@product.Name</td>
-                <td>@(Math.Round(product.Price.Value, 2))</td>
-                <td>@product.Quanity</td>
-                <td>@product.Description</td>
-                <td><button type="button" class="btn btn-link"@onclick="@(()=>OnEditProduct(product))">Edit</button></td>
-            </tr>
+                <tr>
+                    <td>@GetCategoryByIdUSeCase.Execute(product.CategoryId.Value)?.Name</td>
+                    <td>@product.Name</td>
+                    <td>@(Math.Round(product.Price.Value, 2))</td>
+                    <td>@product.Quanity</td>
+                    <td>@product.Description</td>
+                    <td>
+                        <button type="button" class="btn btn-link" @onclick="@(()=>OnEditProduct(product))">Edit</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-link" @onclick="@(()=>OnDeleteProduct(product.ProductId))">Delete</button>
+                    </td>
+                </tr>
             }
 
         </tbody>
@@ -60,5 +65,10 @@
     private void OnEditProduct(Product product)
     {
         NavigationManager.NavigateTo($"/editproduct/{product.ProductId}");
+    }
+
+    private void OnDeleteProduct(int productId)
+    {
+        DeleteProductUseCase.Execute(productId);
     }
 }
