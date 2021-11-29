@@ -1,46 +1,57 @@
-﻿@page "/Editcategory/{categoryId}"
+﻿@page "/editproduct/{productId}"
 
 @inject NavigationManager NavigationManager
 
-@inject UseCases.IAddCategoryUseCase AddCategoryUseCase
+@inject UseCases.IAddProductUseCase AddProductUseCase
 
-@inject UseCases.IGetCategoryByIdUseCase GetCategoryByIdUseCase
-@inject UseCases.IEditCategoryUseCase  EditCategoryUseCase
+@inject UseCases.IGetProductByIdByUseCase GetProductByIdUseCase
 
+@inject UseCases.IEditProductUseCase  EditProductUseCase
+@inject UseCases.IViewCategoriesUseCase ViewCategoriesUseCase
 
-<h3>Edit Category</h3>
+<h3>Edit Product</h3>
 
-@if (category != null)
+@if (product != null)
 {
 
-    <EditForm Model="category" OnValidSubmit="OnValidSumit">
+    <EditForm Model="product" OnValidSubmit="OnValidSumit">
 
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
         <div class="form-group">
             <label for="name">Name</label>
-            <InputText id="name" @bind-Value="category.Name" class="form-control"></InputText>
+            <InputText id="name" @bind-Value="product.Name" class="form-control"></InputText>
+        </div>
+
+        <div class="form-group">
+
+            <label for="category">Category</label>
+
+            <select id="category" @bind="product.CategoryId" class="form-control">
+
+                <option selected></option>
+                @foreach (var cat in categories)
+                {
+                    <option value="@cat.CategoryId">@cat.Name</option>
+                }
+
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price</label>
+            <InputNumber id="price" @bind-Value="product.Price" @bind-Value:format="F2" class="form-control"></InputNumber>
+        </div>
+
+        <div class="form-group">
+            <label for="quanity">Quanity</label>
+            <InputNumber id="quanity" @bind-Value="product.Quanity" class="form-control"></InputNumber>
         </div>
 
         <div class="form-group">
             <label for="description">Description</label>
-            <InputText id="description" @bind-Value="category.Description" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="legal">Is Legal?</label>
-            <InputText id="legal" @bind-Value="category.IsLegalForEveryone" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="forKids">Is For Children?</label>
-            <InputText id="forKids" @bind-Value="category.IsForChildren" class="form-control"></InputText>
-        </div>
-
-        <div class="form-group">
-            <label for="recommendation">Recommended Age</label>
-            <InputText id="recommendation" @bind-Value="category.RecommendedAge" class="form-control"></InputText>
+            <InputText id="description" @bind-Value="product.Description" class="form-control"></InputText>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
@@ -54,31 +65,34 @@
 @code {
 
     [Parameter]
-    public string CategoryId { get; set; }
+    public string ProductId { get; set; }
 
-    private Category category;
+    private Product product;
+
+    private IEnumerable<Category> categories;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
+        categories = ViewCategoriesUseCase.Execute();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
 
-        if (int.TryParse(this.CategoryId, out int ICategoryId))
+        if (int.TryParse(this.ProductId, out int IProductId))
         {
-            var cat = GetCategoryByIdUseCase.Execute(ICategoryId);
-            this.category = new Category
+            var currentProduct = GetProductByIdUseCase.Execute(IProductId);
+            this.product = new Product
             {
-                CategoryId = cat.CategoryId,
-                Name = cat.Name,
-                Description = cat.Description,
-                IsLegalForEveryone = cat.IsLegalForEveryone,
-                IsForChildren = cat.IsForChildren,
-                RecommendedAge = cat.RecommendedAge,
+                ProductId = currentProduct.ProductId,
+                Name = currentProduct.Name,
+                CategoryId = currentProduct.CategoryId,
+                Price = currentProduct.Price,
+                Quanity = currentProduct.Quanity,
+                Description = currentProduct.Description,
             };
         }
     }
@@ -86,14 +100,14 @@
     //Method that Submits producs and categories
     private void OnValidSumit()
     {
-        EditCategoryUseCase.Execute(this.category);
-        NavigationManager.NavigateTo("/categories");
+        EditProductUseCase.Execute(this.product);
+        NavigationManager.NavigateTo("/products");
     }
 
     //Method that Cancels product adding
     private void OnCancel()
     {
-        NavigationManager.NavigateTo("/categories");
+        NavigationManager.NavigateTo("/products");
     }
 
 }
