@@ -18,7 +18,6 @@ namespace CoreBusiness
         public int? Quanity { get; set; }
         [Required]
         public double? Price { get; set; }
-        [Required]
         public string Description { get; set; }
     }
 }

@@ -48,6 +48,7 @@ namespace ManagementSystem
             services.AddTransient<IEditProductUseCase, EditProductUseCase>();
             services.AddTransient<IGetProductByIdByUseCase, GetProductByIdByUseCase>();
             services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
+            services.AddTransient<IViewProductsByCategoryId, ViewProductsByCategoryId>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

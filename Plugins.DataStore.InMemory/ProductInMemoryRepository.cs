@@ -75,5 +75,10 @@ namespace Plugins.DataStore.InMemory
                 products.Remove(productToDelete);
             }
         }
+
+        public IEnumerable<Product> GetProductsByCategoryId(int categoryId)
+        {
+            return products.Where(x => x.CategoryId == categoryId);
+        }
     }
 }
