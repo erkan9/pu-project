@@ -1,9 +1,10 @@
 ﻿@page "/transactions"
 
+@inject IJSRuntime JSRuntime
 @inject IGetTransactionsUseCase GetTransactionsUseCase
 
 <div class="row">
-    <div class="col-4">
+    <div class="col-2">
         <label for="cashier">Cashier Name</label>
         <input type="text" id="cashier" class="form-control" @bind-value="cashierName" />
     </div>
@@ -16,7 +17,12 @@
         <input type="date" id="enddate" class="form-control" @bind-value="endDate" />
     </div>
     <div class="col-2">
+        <label>&nbsp;</label>
         <button type="button" class="btn btn-primary" @onclick="LoadTransactions">Seach</button>
+    </div>
+    <div class="col-2">
+        <label>&nbsp;</label>
+        <button type="button" class="btn btn-primary" @onclick="PrintReport">Print</button>
     </div>
 </div>
 
@@ -24,6 +30,7 @@
 
 @if (transactions != null)
 {
+<div id="printarea">
     <table class="table">
         <thead>
             <tr>
@@ -40,16 +47,16 @@
         <tbody>
             @foreach (var tran in transactions)
             {
-            <tr>
-                <td>@tran.TimeStamp.ToString("dd-MM-yy HH:mm")</td>
-                <td>@tran.CashierName</td>
-                <td>@tran.ProductName</td>
-                <td>@tran.BeforeQty</td>
-                <td>@tran.SoldQty</td>
-                <td>@(tran.BeforeQty - tran.SoldQty)</td>
-                <td style="text-align:right">@(string.Format("{0:c}", tran.Price))</td>
-                <td style="text-align:right">@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
-            </tr>
+                <tr>
+                    <td>@tran.TimeStamp.ToString("dd-MM-yy HH:mm")</td>
+                    <td>@tran.CashierName</td>
+                    <td>@tran.ProductName</td>
+                    <td>@tran.BeforeQty</td>
+                    <td>@tran.SoldQty</td>
+                    <td>@(tran.BeforeQty - tran.SoldQty)</td>
+                    <td style="text-align:right">@(string.Format("{0:c}", tran.Price))</td>
+                    <td style="text-align:right">@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
+                </tr>
             }
         </tbody>
         <tfoot>
@@ -64,6 +71,7 @@
             </tr>
         </tfoot>
     </table>
+</div>
 }
 
 @code {
@@ -73,16 +81,21 @@
     private DateTime endDate;
     private IEnumerable<Transaction> transactions;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
 
         startDate = DateTime.Today;
         endDate = DateTime.Today;
-        }
+    }
 
-        private void LoadTransactions()
+    private void LoadTransactions()
     {
-       transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate);
-        }
+        transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate);
+    }
+
+    private void PrintReport()
+    {
+        JSRuntime.InvokeVoidAsync("print");
+    }
 }
