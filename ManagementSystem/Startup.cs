@@ -53,6 +53,7 @@ namespace ManagementSystem
             services.AddTransient<ISellProductUseCase, SellProductUseCase>();
             services.AddTransient<IRecordTransactionUseCase, RecordTransactionUseCase>();
             services.AddTransient<IGetTodayTransactionsUseCase, GetTodayTransactionsUseCase>();
+            services.AddTransient<IGetTransactionsUseCase, GetTransactionsUseCase>();
 
         }
 
