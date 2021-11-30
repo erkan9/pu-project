@@ -23,18 +23,22 @@
             <tr>
                 <th>Product Name</th>
                 <th>Quanity Left</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var prod in productsInCategory)
                 {
-            <tr @onclick="(() => OnSelectProduct(prod))" 
+            <tr @onclick="(() => OnSelectProduct(prod))"
                 style="@(prod.ProductId == selectedProductId?"background-color:beige; cursor:pointer;":"cursor:pointer")">
                 <td>
                     @prod.Name
                 </td>
                 <td>
                     @prod.Quanity
+                </td>
+                <td>
+                    @prod.Description
                 </td>
             </tr>
                 }
@@ -67,6 +71,7 @@
         {
             selectedCategoryId = value;
             productsInCategory = ViewProductsByCategoryId.Execute(value);
+            OnSelectProduct(null);
             StateHasChanged();
         }
     }
@@ -82,9 +87,11 @@
 
     private void OnSelectProduct(Product product)
     {
-        selectedProductId = product.ProductId;
 
         OnProductSelected.InvokeAsync(product);
+
+        if (product != null) selectedProductId = product.ProductId;
+
     }
 
 }
