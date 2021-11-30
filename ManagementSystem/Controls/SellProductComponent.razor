@@ -37,6 +37,9 @@
     private string errorMessage;
 
     [Parameter]
+    public string CashierName { get; set; }
+
+    [Parameter]
     public Product SelectedProduct { get; set; }
 
     [Parameter]
@@ -58,14 +61,20 @@
             };
         }
         else
-            {
+        {
             productToSell = null;
-            }
+        }
 
     }
 
     private void SellProduct()
     {
+        if (string.IsNullOrWhiteSpace(CashierName))
+        {
+            errorMessage = "The Name is missing.";
+            return;
+        }
+
         var product = GetProductByIdByUseCase.Execute(productToSell.ProductId);
 
         if (productToSell.Quanity <= 0)
@@ -74,10 +83,11 @@
         }
         else if (product.Quanity >= productToSell.Quanity)
         {
+
             OnProductSold.InvokeAsync(productToSell);
             errorMessage = string.Empty;
 
-            SellProductUseCase.Execute(productToSell.ProductId, productToSell.Quanity.Value);
+            SellProductUseCase.Execute(CashierName, productToSell.ProductId, productToSell.Quanity.Value);
         }
         else
         {
