@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoreBusiness
@@ -13,5 +14,7 @@ namespace CoreBusiness
         public string IsLegalForEveryone { get; set; }
         public string IsForChildren { get; set; }
         public string RecommendedAge { get; set; }
+
+        public List<Product> Products { get; set; }
     }
 }

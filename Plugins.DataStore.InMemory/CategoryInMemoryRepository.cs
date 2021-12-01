@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UseCases.DataStorePluginInterfaces;
 
-//Created InMemory data store first for rapid develompent and after that will swap
-//TODO swap with SQL later
 namespace Plugins.DataStore.InMemory
 {
     public class CategoryInMemoryRepository : ICategoryRepository

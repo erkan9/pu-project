@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Plugins.DataStore.InMemory;
+using Plugins.DataStore.SQL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,10 +35,21 @@ namespace ManagementSystem
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
+            services.AddDbContext<MarketContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            }
+            );
+
             //Dependency Injection for In-Memory Data Store
-            services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
-            services.AddScoped<IProductRepository, ProductInMemoryRepository>();
-            services.AddScoped<ITransactionRepostiory, TransactionInMemoryRepository>();
+            //services.AddScoped<ICategoryRepository, CategoryInMemoryRepository>();
+            //services.AddScoped<IProductRepository, ProductInMemoryRepository>();
+            //services.AddScoped<ITransactionRepostiory, TransactionInMemoryRepository>();
+
+            //Dependency Injection for EF core Data Store for SQL
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ITransactionRepostiory, TransactionsRepository>();
 
             // Dependency Injection for Use Cases and Repositories
             services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
