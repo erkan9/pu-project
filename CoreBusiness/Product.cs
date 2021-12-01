@@ -13,11 +13,13 @@ namespace CoreBusiness
         [Required]
         public int? CategoryId { get; set; }
         [Required]
+        [StringLength(15, MinimumLength = 1)]
         public string Name { get; set; }
         [Required]
         public int? Quanity { get; set; }
         [Required]
         public double? Price { get; set; }
+        [StringLength(15, MinimumLength = 1)]
         public string Description { get; set; }
 
         public Category Category { get; set; }
